@@ -19,8 +19,11 @@ def main():
     code = sys.argv[2]
     am_start = datetime.time(hour=9, minute=30)
     am_end = datetime.time(hour=11, minute=31)
-    pm_start = datetime.time(hour=13, minute=00)
+    pm_start = datetime.time(hour=13, minute=0)
     pm_end = datetime.time(hour=15, minute=1)
+
+    price = get_price(code)
+    write_value(metric_id, price)
 
     while True:
         now_time = datetime.datetime.now().time()
