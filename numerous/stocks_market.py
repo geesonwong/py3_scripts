@@ -22,8 +22,8 @@ def main():
     pm_start = datetime.time(hour=13, minute=0)
     pm_end = datetime.time(hour=15, minute=1)
 
-    price = get_price(code)
-    write_value(metric_id, price)
+    # price = get_price(code)
+    # write_value(metric_id, price)
 
     while True:
         now_time = datetime.datetime.now().time()
