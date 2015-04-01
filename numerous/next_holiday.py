@@ -9,7 +9,7 @@ __date__ = '03-28-2015 08:38'
 AUTHORIZATION_KEY = 'nmrs_HRDoaGPyGHXg'
 METRIC_ID = '2441999518851690821'
 
-desc = """
+DESC = """
 20150405,3,清明节
 20150501,3,劳动节
 20150208,7,春节
@@ -29,7 +29,7 @@ def main():
 
 def build_holidays():
     holidays = []
-    for day in desc.strip().split('\n'):
+    for day in DESC.strip().split('\n'):
         strs = day.split(',')
         holidays.append([strs[0], int(strs[1]), strs[2]])
     return holidays
