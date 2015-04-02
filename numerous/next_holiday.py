@@ -1,56 +1,55 @@
 import datetime
+from io import StringIO
+
+import json
 
 import numerous
+import requests
 
 
 __author__ = 'Gson'
-__date__ = '03-28-2015 08:38'
+__date__ = '04-02-2015 12:52'
 
 AUTHORIZATION_KEY = 'nmrs_HRDoaGPyGHXg'
 METRIC_ID = '2441999518851690821'
 
-DESC = """
-20150405,3,清明节
-20150501,3,劳动节
-20150208,7,春节
-20150620,3,端午节
-20150927,3,中秋节
-20151001,7,国庆节
-"""
-
 
 def main():
-    holidays = build_holidays()
-    next_holiday = get_next_holiday(holidays)
-    comment = get_detail(next_holiday)
-    write_value(next_holiday[0], comment)
+    next_holiday = get_next_holiday()
+    value = get_value(next_holiday)
+    comment = get_comment(next_holiday)
+    write_value(value, comment)
     pass
 
 
-def build_holidays():
-    holidays = []
-    for day in DESC.strip().split('\n'):
-        strs = day.split(',')
-        holidays.append([strs[0], int(strs[1]), strs[2]])
-    return holidays
+def get_next_holiday():
+    now_datetime = datetime.datetime.now()
+    next_holiday_datetime = get_next_holiday_datetime(now_datetime.year)
+    if next_holiday_datetime is None:
+        next_holiday_datetime = get_next_holiday_datetime(now_datetime.year + 1)
+
+    result = json.load(StringIO(requests.get('https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php?resource_id=6018&query=' + next_holiday_datetime.strftime('%Y.%m.%d')).text))
+    return result['data'][0]['holiday'][0]
 
 
-def get_next_holiday(holidays):
-    index = []
-    holidays.sort(key=lambda day: day[0])
-    for (i, next_day) in enumerate(holidays):
-        date_time = datetime.datetime.strptime(next_day[0], '%Y%m%d')
-        if date_time > datetime.datetime.now():
-            index.append([datetime.datetime.strptime(next_day[0], '%Y%m%d'), next_day[1], next_day[2]])
-    index.sort(key=lambda day: day[0])
-    return index[0]
+def get_next_holiday_datetime(year):
+    result = json.load(StringIO(requests.get('https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php?resource_id=6018&query=' + str(year)).text))
+    holiday_list = result['data'][0]['holidaylist']
+    now = datetime.datetime.now()
+    for day in holiday_list:
+        if datetime.datetime.strptime(day['startday'], '%Y-%m-%d') > now:
+            return datetime.datetime.strptime(day['startday'], '%Y-%m-%d')
 
 
-def get_detail(next_holiday):
+def get_value(next_holiday):
+    return datetime.datetime.strptime(next_holiday['list'][0]['date'], '%Y-%m-%d')
+
+
+def get_comment(next_holiday):
     date_format = '{d.month}月{d.day}号'
-    start = date_format.format(d=next_holiday[0])
-    end = date_format.format(d=next_holiday[0] + datetime.timedelta(days=next_holiday[1] - 1))
-    return '下一个节日是' + next_holiday[2] + '，' + start + '~' + end + '，假期长' + str(next_holiday[1]) + '天，'
+    start = date_format.format(d=datetime.datetime.strptime(next_holiday['list'][0]['date'], '%Y-%m-%d'))
+    end = date_format.format(d=datetime.datetime.strptime(next_holiday['list'][-1]['date'], '%Y-%m-%d'))
+    return '下一个节日是' + next_holiday['name'] + '，' + start + '~' + end + '，假期长' + str(len(next_holiday['list'])) + '天。其中，' + next_holiday['desc']
 
 
 def write_value(until_day, comment):
