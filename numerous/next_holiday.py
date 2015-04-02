@@ -1,6 +1,5 @@
 import datetime
 from io import StringIO
-
 import json
 
 import numerous
@@ -55,9 +54,10 @@ def get_comment(next_holiday):
 def write_value(until_day, comment):
     nr = numerous.Numerous(apiKey=AUTHORIZATION_KEY)
     metric = nr.metric(METRIC_ID)
-    if metric.read() == until_day.timestamp():
+    timestamp = until_day.timestamp() - 60 * 60 * 6
+    if metric.read() == timestamp:
         return
-    metric.write(until_day.timestamp())
+    metric.write(timestamp)
     metric.comment(comment)
 
 
