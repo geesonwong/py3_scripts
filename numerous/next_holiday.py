@@ -18,7 +18,6 @@ def main():
     value = get_value(next_holiday)
     comment = get_comment(next_holiday)
     write_value(value, comment)
-    pass
 
 
 def get_next_holiday():
@@ -28,7 +27,11 @@ def get_next_holiday():
         next_holiday_datetime = get_next_holiday_datetime(now_datetime.year + 1)
 
     result = json.load(StringIO(requests.get('https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php?resource_id=6018&query=' + next_holiday_datetime.strftime('%Y.%m.%d')).text))
-    return result['data'][0]['holiday'][0]
+    holidays = result['data'][0]['holiday']
+    now = datetime.datetime.now()
+    for holiday in holidays:
+        if datetime.datetime.strptime(holiday['festival'], '%Y-%m-%d') > now:
+            return holiday
 
 
 def get_next_holiday_datetime(year):

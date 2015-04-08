@@ -13,7 +13,7 @@ __date__ = '04-01-2015 15:33'
 AUTHORIZATION_KEY = 'nmrs_HRDoaGPyGHXg'
 METRIC_ID = '7109893350453685640'
 LIST = """
-SZ000333,27.995,2300
+SZ000333,28.645,2600
 """
 
 
@@ -22,7 +22,7 @@ def main():
     am_start = datetime.time(hour=9, minute=30)
     am_end = datetime.time(hour=11, minute=31)
     pm_start = datetime.time(hour=13, minute=0)
-    pm_end = datetime.time(hour=15, minute=2)
+    pm_end = datetime.time(hour=15, minute=1)
 
     while True:
         now_time = datetime.datetime.now().time()
