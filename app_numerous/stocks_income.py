@@ -23,7 +23,7 @@ COST = 70000
 def main():
     stocks = build_list()
     am_start = datetime.time(hour=9, minute=30)
-    am_end = datetime.time(hour=12, minute=31)
+    am_end = datetime.time(hour=11, minute=31)
     pm_start = datetime.time(hour=13, minute=0)
     pm_end = datetime.time(hour=15, minute=1)
 
