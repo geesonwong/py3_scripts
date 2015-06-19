@@ -14,11 +14,11 @@ GAIN_METRIC_ID = '7109893350453685640'
 TOTAL_METRIC_ID = '7993294341318871002'
 
 LIST = """
-SZ000333,27.763,2000
-SH600276,60.156,1000
+SZ000333,46.208,2000
+SH600276,60.156,1300
 """
-BALANCE = 13645.36
-COST = 110000
+BALANCE = 13730.36  # 余额
+COST = 110000  # 成本
 
 
 def main():
@@ -26,7 +26,7 @@ def main():
     am_start = datetime.time(hour=9, minute=30)
     am_end = datetime.time(hour=11, minute=31)
     pm_start = datetime.time(hour=13, minute=0)
-    pm_end = datetime.time(hour=15, minute=1)
+    pm_end = datetime.time(hour=19, minute=1)
 
     while True:
         now_time = datetime.datetime.now().time()
@@ -37,7 +37,7 @@ def main():
                 current_price = get_price(stock[0])
                 income += (float(current_price) - stock[1]) * stock[2]
                 total_price += float(current_price) * stock[2]
-            total = BALANCE + total_price # 总资产
+            total = BALANCE + total_price  # 总资产
             write_value(TOTAL_METRIC_ID, round(total, 3))
             income = total - COST  # 总收入
             write_value(GAIN_METRIC_ID, round(income, 3))
